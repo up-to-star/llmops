@@ -1,6 +1,9 @@
 from fastapi import FastAPI, APIRouter
 from internal.handle.app_handle import AppHandler
 from injector import inject
+from pydantic import BaseModel
+from internal.schema import CompletionRequest
+
 
 @inject
 class Router:
@@ -8,11 +11,15 @@ class Router:
         self.router = APIRouter()
         self.app_handler = app_handler
         self._register_routes()
-    
+
     def _register_routes(self):
         @self.router.get("/ping")
-        def ping():
-            return self.app_handler.ping()
-    
+        async def ping():
+            return await self.app_handler.ping()
+
+        @self.router.post("/completion")
+        async def completion(request: CompletionRequest):
+            return await self.app_handler.completion(request.query)
+
     def register_router(self, app: FastAPI):
         app.include_router(self.router)
