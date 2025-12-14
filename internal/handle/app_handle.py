@@ -34,3 +34,38 @@ class AppHandler:
             data={"message": "pong"}
         )
         return response
+
+    async def test_db(self):
+        try:
+            from internal.model import User
+            from tortoise.exceptions import IntegrityError
+            try:
+                user = await User.create(
+                    username = "test_user",
+                    password = "test_pass",
+                    email="test@example.com"
+                )
+                await user.save()
+            except IntegrityError:
+                user = await User.get(username="test_user")
+            users = await User.all()
+            response = Response(
+                code=HttpCode.SUCCESS,
+                message="Datebase connection successful",
+                data={
+                    "total_users": len(users),
+                    "test_user": {
+                        "id": user.id,
+                        "username": user.username,
+                        "email": user.email
+                    }
+                }
+            )
+            return response
+        except Exception as e:
+            response = Response(
+                code=HttpCode.INTERNAL_SERVER_ERROR,
+                message="Database connection failed",
+                data={"error": str(e)}
+            )
+            return response

@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "aiomysql>=0.3.2",
+    "cryptography>=46.0.3",
     "fastapi>=0.124.2",
     "injector>=0.23.0",
     "openai>=2.11.0",
@@ -13,6 +15,7 @@ dependencies = [
     "pytest>=9.0.2",
     "python-dotenv>=1.2.1",
     "python-multipart>=0.0.20",
+    "tortoise-orm>=0.25.1",
     "uvicorn>=0.38.0",
     "watchfiles>=1.1.1",
 ]

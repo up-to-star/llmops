@@ -21,5 +21,9 @@ class Router:
         async def completion(request: CompletionRequest):
             return await self.app_handler.completion(request.query)
 
+        @self.router.get("/test_db")
+        async def test_db():
+            return await self.app_handler.test_db()
+
     def register_router(self, app: FastAPI):
         app.include_router(self.router)

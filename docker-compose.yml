@@ -1,0 +1,12 @@
+services:
+  mysql8:
+    image: mysql:8.0.44
+    command: --default-authentication-plugin=caching_sha2_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+    volumes:
+      - ./script/mysql/:/docker-entrypoint-initdb.d/
+      - /home/cyj/docker-volumes/mysql/conf:/etc/mysql/conf.d
+      - /home/cyj/docker-volumes/mysql/data:/var/lib/mysql
+    ports:
+      - "13316:3306"
