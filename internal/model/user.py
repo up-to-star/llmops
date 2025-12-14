@@ -1,6 +1,5 @@
 from tortoise.models import Model
 from tortoise import fields
-from datetime import datetime
 
 
 class User(Model):

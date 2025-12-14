@@ -1,10 +1,92 @@
 from openai import OpenAI
 from pkg.response import Response, HttpCode
-from internal.exception import NotFoundException
 import os
+from injector import inject
+from internal.service import AppService
+import uuid
 
 
+@inject
 class AppHandler:
+    def __init__(self, app_service: AppService):
+        self.app_service = app_service
+
+    async def create_app(self):
+        app = await self.app_service.create_app()
+        response = Response(
+            code=HttpCode.SUCCESS,
+            message="创建APP成功",
+            data={
+                "app_id": app.id,
+                "name": app.name,
+                "account_id": app.account_id,
+                "description": app.description
+            }
+        )
+        return response
+
+    async def delete_app(self, app_id: uuid.UUID):
+        app = await self.app_service.delete_app(app_id)
+        if app is None:
+            response = Response(
+                code=HttpCode.NOT_FOUND,
+                message="app not found",
+                data={}
+            )
+            return response
+        response = Response(
+            code=HttpCode.SUCCESS,
+            message=f"删除应用{app.name}成功",
+            data={
+                "app_id": app.id,
+                "name": app.name,
+                "account_id": app.account_id,
+                "description": app.description
+            }
+        )
+        return response
+
+    async def update_app(self, app_id: uuid.UUID):
+        app = await self.app_service.update_app(app_id)
+        if app is None:
+            response = Response(
+                code=HttpCode.NOT_FOUND,
+                message="app not found",
+                data={}
+            )
+            return response
+        response = Response(
+            code=HttpCode.SUCCESS,
+            message="success",
+            data={
+                "app_id": app.id,
+                "name": app.name,
+                "account_id": app.account_id,
+                "description": app.description
+            }
+        )
+        return response
+
+    async def get_app(self, app_id: uuid.UUID):
+        app = await self.app_service.get_app(app_id)
+        if app is None:
+            response = Response(
+                code=HttpCode.NOT_FOUND,
+                message="app not found",
+                data={}
+            )
+            return response
+        response = Response(
+            code=HttpCode.SUCCESS,
+            message="success",
+            data={
+                "app_id": app.id,
+                "name": app.name,
+                "account_id": app.account_id,
+                "description": app.description
+            }
+        )
+        return response
 
     async def completion(self, query: str):
         client = OpenAI(
@@ -41,8 +123,8 @@ class AppHandler:
             from tortoise.exceptions import IntegrityError
             try:
                 user = await User.create(
-                    username = "test_user",
-                    password = "test_pass",
+                    username="test_user",
+                    password="test_pass",
                     email="test@example.com"
                 )
                 await user.save()
