@@ -1,4 +1,6 @@
 from openai import OpenAI
+from pkg.response import Response, HttpCode
+from internal.exception import NotFoundException
 import os
 
 
@@ -18,8 +20,17 @@ class AppHandler:
             messages=messages,
             stream=False,
         )
-
-        return {"content": completion.choices[0].message.content}
+        response = Response(
+            code=HttpCode.SUCCESS,
+            message="success",
+            data={"content": completion.choices[0].message.content}
+        )
+        return response
 
     async def ping(self):
-        return {"message": "pong"}
+        response = Response(
+            code=HttpCode.SUCCESS,
+            message="success",
+            data={"message": "pong"}
+        )
+        return response

@@ -1,13 +1,12 @@
-from injector import Injector
-from internal.server import Http
-from internal.router import Router
 import uvicorn
 import dotenv
 
 dotenv.load_dotenv()
 
 if __name__ == "__main__":
-    injector = Injector()
-    app = Http(router=injector.get(Router))
-
-    uvicorn.run(app, host="0.0.0.0", port=9090)
+    uvicorn.run(
+        "app.http.app:app",  # 使用导入字符串引用应用
+        host="0.0.0.0",
+        port=9090,
+        reload=True
+    )
