@@ -18,9 +18,9 @@ class Router:
         async def ping():
             return await self.app_handler.ping()
 
-        @self.router.post("/completion")
-        async def completion(request: CompletionRequest):
-            return await self.app_handler.completion(request.query)
+        @self.router.post("/apps/{app_id}/debug")
+        async def debug(request: CompletionRequest, app_id: uuid.UUID):
+            return await self.app_handler.debug(request.query, app_id)
 
         @self.router.get("/test_db")
         async def test_db():

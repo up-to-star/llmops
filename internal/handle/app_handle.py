@@ -90,17 +90,18 @@ class AppHandler:
         )
         return response
 
-    async def completion(self, query: str):
+    async def debug(self, query: str, app_id: uuid.UUID):
+        print(app_id)
         prompt = ChatPromptTemplate.from_template("{query}")
         llm = ChatDeepSeek(
             api_key=os.getenv("DEEPSEEK_API_KEY"),
             base_url=os.getenv("DEEPSEEK_API_BASE_URL"),
             model="deepseek-chat",
         )
-        ai_message = llm.invoke(prompt.invoke({"query": query}))
+
         parser = StrOutputParser()
-        ai_message = parser.invoke(ai_message)
-        content = parser.invoke(ai_message)
+        chain = prompt | llm | parser
+        content = chain.invoke({"query": query})
         response = Response(
             code=HttpCode.SUCCESS,
             message="success",
