@@ -1,9 +1,11 @@
-from openai import OpenAI
 from pkg.response import Response, HttpCode
 import os
 from injector import inject
 from internal.service import AppService
 import uuid
+from langchain_deepseek import ChatDeepSeek
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 
 
 @inject
@@ -89,23 +91,20 @@ class AppHandler:
         return response
 
     async def completion(self, query: str):
-        client = OpenAI(
+        prompt = ChatPromptTemplate.from_template("{query}")
+        llm = ChatDeepSeek(
             api_key=os.getenv("DEEPSEEK_API_KEY"),
             base_url=os.getenv("DEEPSEEK_API_BASE_URL"),
-        )
-        messages = [
-            {"role": "system", "content": "你是OpenAI开发的聊天机器人"},
-            {"role": "user", "content": query}
-        ]
-        completion = client.chat.completions.create(
             model="deepseek-chat",
-            messages=messages,
-            stream=False,
         )
+        ai_message = llm.invoke(prompt.invoke({"query": query}))
+        parser = StrOutputParser()
+        ai_message = parser.invoke(ai_message)
+        content = parser.invoke(ai_message)
         response = Response(
             code=HttpCode.SUCCESS,
             message="success",
-            data={"content": completion.choices[0].message.content}
+            data={"content": content}
         )
         return response
 
