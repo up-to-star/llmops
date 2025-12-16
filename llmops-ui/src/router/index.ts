@@ -35,6 +35,11 @@ const router = createRouter({
           name: 'auth-login',
           component: () => import('@/views/auth/LoginView.vue'),
         },
+        {
+          path: 'space/apps/:app_id',
+          name: 'space-apps-detail',
+          component: () => import('@/views/space/apps/DetailView.vue'),
+        },
       ],
     },
   ],

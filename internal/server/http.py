@@ -19,13 +19,13 @@ class Http(FastAPI):
         self.add_exception_handler(
             CustomException, self._custom_exception_handler)
         
-        self.add_middleware(
-            CORSMiddleware,
-            allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
-        )
+        # self.add_middleware(
+        #     CORSMiddleware,
+        #     allow_origins=["*"],
+        #     allow_credentials=True,
+        #     allow_methods=["*"],
+        #     allow_headers=["*"],
+        # )
 
 
     async def lifespan(self, app: FastAPI):
