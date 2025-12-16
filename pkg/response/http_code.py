@@ -1,10 +1,10 @@
 from enum import Enum
 
 
-class HttpCode(str, Enum):
-    SUCCESS = "success"
-    FAIL = "fail"
-    NOT_FOUND = "not_found"
-    UNAUTHORIZED = "unauthorized"
-    FORBIDDEN = "forbidden"
-    VALIDATION_ERROR = "validation_error"
+class HttpCode(int, Enum):
+    SUCCESS = 200
+    FAIL = 400
+    NOT_FOUND = 404
+    UNAUTHORIZED = 401
+    FORBIDDEN = 403
+    VALIDATION_ERROR = 422

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from internal.router import Router
 from pkg.response import Response, HttpCode
 from internal.exception import CustomException
@@ -17,6 +18,14 @@ class Http(FastAPI):
         # 添加自定义异常处理器
         self.add_exception_handler(
             CustomException, self._custom_exception_handler)
+        
+        self.add_middleware(
+            CORSMiddleware,
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
 
     async def lifespan(self, app: FastAPI):
