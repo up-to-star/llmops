@@ -91,7 +91,6 @@ class AppHandler:
         return response
 
     async def debug(self, query: str, app_id: uuid.UUID):
-        print(app_id)
         prompt = ChatPromptTemplate.from_template("{query}")
         llm = ChatDeepSeek(
             api_key=os.getenv("DEEPSEEK_API_KEY"),

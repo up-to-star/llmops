@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { BASE_URL, TIMEOUT } from '@/config'
+import { type AxiosResponse, type AxiosRequestConfig } from 'axios'
+import { type BaseResponse, type BasePaginatorResponse } from '@/models/base'
 
 const service = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL || BASE_URL,
@@ -16,23 +18,30 @@ service.interceptors.request.use(
 )
 
 service.interceptors.response.use(
-  (response) => {
-    const res = response.data
-    if (res.code !== 200) {
-      if (res.code === 401) {
+  (response: AxiosResponse) => {
+    const {data} = response
+    if (data.code !== 200) {
+      if (data.code === 401) {
         // 未登录
       }
-      return Promise.reject(new Error(res.message || '请求失败'))
+      throw new Error(data.message || '请求失败')
     }
-    return res.data
+    return data
   },
   (error) => {
-    const { response } = error
-    if (response) {
-      return Promise.reject(new Error(response.data.message || '请求失败'))
-    }
-    return Promise.reject(error)
+    console.error('API 请求错误', error)
+    throw error
   },
 )
+
+export const request = async <T>(config: AxiosRequestConfig): Promise<BaseResponse<T>> => {
+  const res = await service(config)
+  return (res as unknown) as BaseResponse<T>
+}
+
+export const requestPaginator = async <T>(config: AxiosRequestConfig): Promise<BasePaginatorResponse<T>> => {
+  const res = await service(config)
+  return (res as unknown) as BasePaginatorResponse<T>
+}
 
 export default service
