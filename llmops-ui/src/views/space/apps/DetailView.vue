@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { Message } from '@arco-design/web-vue'
 import { debugApp } from '@/api'
+import { useRoute } from 'vue-router'
 
 interface ChatMessage {
   role: 'human' | 'assistant'
@@ -11,6 +12,7 @@ interface ChatMessage {
 const query = ref('')
 const messages = ref<ChatMessage[]>([])
 const isLoading = ref(false)
+const route = useRoute()
 
 const clearHistory = () => {
   messages.value = []
@@ -33,7 +35,8 @@ const send = async () => {
   try {
     query.value = ''
     isLoading.value = true
-    const res = await debugApp('550e8400-e29b-41d4-a716-446655440000', humanQuery)
+    // 550e8400-e29b-41d4-a716-446655440000
+    const res = await debugApp(route.params.app_id as string, humanQuery)
     messages.value.push({
       role: 'assistant',
       content: res.data.content,

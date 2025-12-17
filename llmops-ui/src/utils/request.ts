@@ -19,7 +19,7 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    const {data} = response
+    const { data } = response
     if (data.code !== 200) {
       if (data.code === 401) {
         // 未登录
@@ -36,12 +36,14 @@ service.interceptors.response.use(
 
 export const request = async <T>(config: AxiosRequestConfig): Promise<BaseResponse<T>> => {
   const res = await service(config)
-  return (res as unknown) as BaseResponse<T>
+  return res as unknown as BaseResponse<T>
 }
 
-export const requestPaginator = async <T>(config: AxiosRequestConfig): Promise<BasePaginatorResponse<T>> => {
+export const requestPaginator = async <T>(
+  config: AxiosRequestConfig,
+): Promise<BasePaginatorResponse<T>> => {
   const res = await service(config)
-  return (res as unknown) as BasePaginatorResponse<T>
+  return res as unknown as BasePaginatorResponse<T>
 }
 
 export default service
