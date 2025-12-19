@@ -2,6 +2,7 @@ from tortoise.models import Model
 from tortoise import fields
 import uuid
 
+
 class App(Model):
     """AI应用基础模型类"""
     id = fields.UUIDField(
@@ -9,6 +10,10 @@ class App(Model):
     account_id = fields.UUIDField(nullable=False, description="账号ID")
     name = fields.CharField(max_length=255, default="",
                             nullable=False, description="应用名称")
+    icon = fields.CharField(max_length=1024, default="",
+                            nullable=False, description="应用图标")
+    status = fields.CharField(max_length=255, default="",
+                              nullable=False, description="应用状态")
     description = fields.TextField(
         default="", nullable=False, description="应用描述")
     created_at = fields.DatetimeField(auto_now_add=True, description="创建时间")

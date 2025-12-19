@@ -4,14 +4,34 @@ from injector import inject
 from internal.service import AppService
 import uuid
 from langchain_deepseek import ChatDeepSeek
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.output_parsers import StrOutputParser
+from langchain.chat_models import init_chat_model
+from langchain.agents import create_agent, AgentState
+from langgraph.checkpoint.memory import InMemorySaver
+
+
+class CustomAgentState(AgentState):
+    user_id: str
+    preferences: dict
 
 
 @inject
 class AppHandler:
     def __init__(self, app_service: AppService):
         self.app_service = app_service
+        # 创建一个全局的InMemorySaver实例，用于保存对话历史
+        self.checkpointer = InMemorySaver()
+        # 初始化chat model
+        self.model = init_chat_model('deepseek-chat', model_provider='deepseek')
+        # 创建agent实例，只需要创建一次
+        self.agent = create_agent(
+            model=self.model,
+            system_prompt="你是一个强大的聊天机器人，能根据用户的问题进行回答",
+            tools=[],
+            state_schema=CustomAgentState,
+            checkpointer=self.checkpointer,
+        )
 
     async def create_app(self):
         app = await self.app_service.create_app()
@@ -91,20 +111,19 @@ class AppHandler:
         return response
 
     async def debug(self, query: str, app_id: uuid.UUID):
-        prompt = ChatPromptTemplate.from_template("{query}")
-        llm = ChatDeepSeek(
-            api_key=os.getenv("DEEPSEEK_API_KEY"),
-            base_url=os.getenv("DEEPSEEK_API_BASE_URL"),
-            model="deepseek-chat",
+        # 使用已创建的agent实例，传入当前查询和thread_id
+        result = self.agent.invoke(
+            {
+                "messages": [{"role": "user", "content": query}],
+                "user_id": str(app_id),
+                "preferences": {"language": "zh-CN"},
+            },
+            config={"thread_id": str(app_id)}
         )
-
-        parser = StrOutputParser()
-        chain = prompt | llm | parser
-        content = chain.invoke({"query": query})
         response = Response(
             code=HttpCode.SUCCESS,
             message="success",
-            data={"content": content}
+            data={"content": result['messages'][-1].content}
         )
         return response
 
