@@ -4,6 +4,7 @@ import os
 from .tool_entity import ToolEntity
 from internal.lib import dynamic_import
 from typing import Any
+import time
 
 
 class ProviderEntity(BaseModel):
@@ -14,6 +15,7 @@ class ProviderEntity(BaseModel):
     icon: str = Field(description="服务商图标")
     background: str = Field(description="服务商图标背景颜色")
     category: str = Field(description="服务商分类")
+    create_at: int = Field(default_factory=lambda: int(time.time()), description="服务商创建时间")
 
 
 class Provider(BaseModel):

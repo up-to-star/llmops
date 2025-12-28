@@ -7,8 +7,8 @@ from internal.core.tools.builtin_tools.entities import ProviderEntity, Provider,
 
 @singleton
 @inject
-class ProviderFactory:
-    """服务商提供工厂类"""
+class BuiltinProviderManager:
+    """内置服务商提供工具类"""
     provider_map: dict[str, Provider] = {}
 
     def __init__(self):

@@ -4,12 +4,14 @@ from pydantic import BaseModel, Field
 import requests
 import os
 import json
+from internal.lib.helper import add_attribute
 
 
 class WeatherArgsSchema(BaseModel):
     city: str = Field(description="要查询天气的目标城市, 例如：广州")
 
 
+@add_attribute("args_schema", WeatherArgsSchema)
 class WeatherTool(BaseTool):
     name: str = "weather"
     description: str = "当你想查询天气或者天气相关的问题时可以使用的工具"
@@ -48,5 +50,3 @@ class WeatherTool(BaseTool):
 def weather(**kwargs) -> BaseTool:
     """返回天气查询工具"""
     return WeatherTool(**kwargs)
-
-

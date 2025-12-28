@@ -9,7 +9,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain.chat_models import init_chat_model
 from langchain.agents import create_agent, AgentState
 from langgraph.checkpoint.memory import InMemorySaver
-from internal.core.tools.builtin_tools.providers import ProviderFactory
+from internal.core.tools.builtin_tools.providers import BuiltinProviderManager
 
 
 class CustomAgentState(AgentState):
@@ -20,8 +20,8 @@ class CustomAgentState(AgentState):
 @inject
 class AppHandler:
     app_service: AppService
-    provider_factory: ProviderFactory
-    def __init__(self, app_service: AppService, provider_factory: ProviderFactory):
+    provider_factory: BuiltinProviderManager
+    def __init__(self, app_service: AppService, provider_factory: BuiltinProviderManager):
         self.app_service = app_service
         self.provider_factory = provider_factory
         # 创建一个全局的InMemorySaver实例，用于保存对话历史
