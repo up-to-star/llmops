@@ -1,0 +1,5 @@
+name: duckduckgo_search
+label: DuckDuckGo搜索
+description: 用于进行 DuckDuckGo 搜索的工具, DuckDuckGo是一个注重隐私的搜索引擎
+params: []
+

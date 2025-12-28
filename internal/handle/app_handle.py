@@ -9,6 +9,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain.chat_models import init_chat_model
 from langchain.agents import create_agent, AgentState
 from langgraph.checkpoint.memory import InMemorySaver
+from internal.core.tools.builtin_tools.providers import ProviderFactory
 
 
 class CustomAgentState(AgentState):
@@ -18,8 +19,11 @@ class CustomAgentState(AgentState):
 
 @inject
 class AppHandler:
-    def __init__(self, app_service: AppService):
+    app_service: AppService
+    provider_factory: ProviderFactory
+    def __init__(self, app_service: AppService, provider_factory: ProviderFactory):
         self.app_service = app_service
+        self.provider_factory = provider_factory
         # 创建一个全局的InMemorySaver实例，用于保存对话历史
         self.checkpointer = InMemorySaver()
         # 初始化chat model
@@ -128,10 +132,12 @@ class AppHandler:
         return response
 
     async def ping(self):
+        providers = self.provider_factory.get_providers()
+        
         response = Response(
             code=HttpCode.SUCCESS,
             message="success",
-            data={"message": "pong"}
+            data={"providers": [provider.dict() for provider in providers]}
         )
         return response
 

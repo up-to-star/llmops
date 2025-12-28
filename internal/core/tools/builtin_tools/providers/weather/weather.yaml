@@ -1,0 +1,4 @@
+name: weather
+label: 天气查询
+description: 根据传递的城市名称查询该城市的天气信息
+params: []

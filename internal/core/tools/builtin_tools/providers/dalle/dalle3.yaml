@@ -1,0 +1,30 @@
+name: dalle3
+label: DALLE-3绘图工具
+description: DALLE-3是OpenAI的一个图像生成模型, 用于文生图片的工具
+params:
+  - name: size
+    label: 图片尺寸
+    type: select
+    required: true
+    default: 1024x1024
+    options: 
+      - value: 1024x1024
+        label: "方(1024x1024)"
+      - value: 512x512
+        label: "方(512x512)"
+      - value: 256x256
+        label: "方(256x256)"
+      - value: 1024x1792
+        label: "竖屏(1024x1792)"
+      - value: 1792x1024
+        label: "横屏(1792x1024)"
+  - name: style
+    label: 图片风格
+    type: select
+    required: true
+    default: vivid
+    options:
+      - value: vivid
+        label: "生动"
+      - value: natural
+        label: "自然" 

@@ -1,0 +1,41 @@
+- name: google
+  label: Google
+  description: 谷歌服务提供商, 涵盖谷歌搜索等工具
+  icon: icon.svg
+  background: "#E5E7EB"
+  category: 网络搜索
+
+- name: time
+  label: 时间
+  description: 用于获取当前时间的工具
+  icon: icon.svg
+  background: "#E5E7EB"
+  category: 实用工具
+
+- name: duckduckgo
+  label: DuckDuckGo
+  description: 用于进行 DuckDuckGo 搜索的工具, DuckDuckGo是一个注重隐私的搜索引擎
+  icon: icon.svg
+  background: "#E5E7EB"
+  category: 网络搜索
+
+- name: dalle
+  label: DALLE
+  description: 用于文生图片的工具
+  icon: icon.svg
+  background: "#E5E7EB"
+  category: 文生图
+
+- name: weather
+  label: 天气查询
+  description: 根据传递的城市名称查询该城市的天气信息
+  icon: icon.svg
+  background: "#E5E7EB"
+  category: 实用工具
+
+- name: wikipedia
+  label: 维基百科
+  description: 用于搜索 Wikipedia 文章的工具
+  icon: icon.svg
+  background: "#FFFFFF"
+  category: 百科全书
