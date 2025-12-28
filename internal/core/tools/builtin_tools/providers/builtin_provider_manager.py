@@ -3,15 +3,17 @@ from injector import inject, singleton
 import os
 import yaml
 from internal.core.tools.builtin_tools.entities import ProviderEntity, Provider, ToolEntity
+from pydantic import BaseModel, Field
 
 
 @singleton
 @inject
-class BuiltinProviderManager:
+class BuiltinProviderManager(BaseModel):
     """内置服务商提供工具类"""
-    provider_map: dict[str, Provider] = {}
+    provider_map: dict[str, Provider] = Field(default_factory=dict)
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._get_provider_map()
 
     def get_provider(self, provider_name: str) -> Provider:

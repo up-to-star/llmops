@@ -52,9 +52,19 @@ class Router:
         async def get_builtin_tools():
             return await self.builtin_tool_handler.get_builtin_tools()
         
+        @self.router.get("/builtin-tools/categories")
+        async def get_categories():
+            return await self.builtin_tool_handler.get_categories()
+        
+        @self.router.get("/builtin-tools/{provider_name}/icon")
+        async def get_provider_icon(provider_name: str):
+            return await self.builtin_tool_handler.get_provider_icon(provider_name)
+        
         @self.router.get("/builtin-tools/{provider_name}/{tool_name}")
         async def get_provider_tool(provider_name: str, tool_name: str):
             return await self.builtin_tool_handler.get_provider_tool(provider_name, tool_name)
+        
+        
 
     def register_router(self, app: FastAPI):
         app.include_router(self.router)

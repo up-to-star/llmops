@@ -1,9 +1,12 @@
+import mimetypes
 from injector import inject
 from dataclasses import dataclass
 from internal.core.tools.builtin_tools.providers import BuiltinProviderManager
+from internal.core.tools.builtin_tools.categories import BuiltinCategoryManager
 from pydantic import BaseModel
 from typing import Any
 from internal.exception import NotFoundException
+import os
 
 
 @inject
@@ -11,7 +14,35 @@ from internal.exception import NotFoundException
 class BuiltinToolService:
     """内置工具服务类"""
     builtin_provider_manager: BuiltinProviderManager
+    builtin_category_manager: BuiltinCategoryManager
 
+    async def get_provider_icon(self, provider_name: str) -> tuple[bytes, str]:
+        """根据服务商名称获取服务商图标"""
+        provider = self.builtin_provider_manager.get_provider(provider_name)
+        if not provider:
+            raise NotFoundException(f"Provider {provider_name} not found")
+        root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        provider_path = os.path.join(
+            root_path, "core", "tools", "builtin_tools", "providers", provider_name)
+        icon_path = os.path.join(
+            provider_path, "_asset", provider.provider_entity.icon)
+        if not os.path.exists(icon_path):
+            raise NotFoundException(
+                f"Icon for provider {provider_name} not found")
+        mimetype, _ = mimetypes.guess_type(icon_path)
+        mimetype = mimetype or "application/octet-stream"
+        return icon_path, mimetype
+
+    async def get_categories(self) -> list:
+        """获取所有工具分类"""
+        category_map = self.builtin_category_manager.get_category_map()
+        
+        return [{
+            "name": category["entity"].category,
+            "category": category["entity"].category,
+            "icon": category["icon"]
+        } for category in category_map.values()]
+        
     async def get_builtin_tools(self) -> list:
         """获取所有内置工具"""
         providers = self.builtin_provider_manager.get_providers()

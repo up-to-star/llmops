@@ -3,7 +3,7 @@
   description: 谷歌服务提供商, 涵盖谷歌搜索等工具
   icon: icon.svg
   background: "#E5E7EB"
-  category: 网络搜索
+  category: search
   create_at: 1694502400
 
 - name: time
@@ -11,7 +11,7 @@
   description: 用于获取当前时间的工具
   icon: icon.svg
   background: "#E5E7EB"
-  category: 实用工具
+  category: tool
   create_at: 1694502400
 
 - name: duckduckgo
@@ -19,7 +19,7 @@
   description: 用于进行 DuckDuckGo 搜索的工具, DuckDuckGo是一个注重隐私的搜索引擎
   icon: icon.svg
   background: "#E5E7EB"
-  category: 网络搜索
+  category: search
   create_at: 1694502400
 
 - name: dalle
@@ -27,7 +27,7 @@
   description: 用于文生图片的工具
   icon: icon.svg
   background: "#E5E7EB"
-  category: 文生图
+  category: image
   create_at: 1694502400
 
 - name: weather
@@ -35,7 +35,7 @@
   description: 根据传递的城市名称查询该城市的天气信息
   icon: icon.svg
   background: "#E5E7EB"
-  category: 实用工具
+  category: weather
   create_at: 1694502400
 
 - name: wikipedia
@@ -43,5 +43,5 @@
   description: 用于搜索 Wikipedia 文章的工具
   icon: icon.svg
   background: "#FFFFFF"
-  category: 百科全书
+  category: other
   create_at: 1694502400
