@@ -6,8 +6,9 @@ import uuid
 class App(Model):
     """AI应用基础模型类"""
     id = fields.UUIDField(
-        pk=True, default_factory=uuid.uuid4, description="应用ID")
-    account_id = fields.UUIDField(nullable=False, description="账号ID")
+        primary_key=True, default_factory=uuid.uuid4, description="应用ID")
+    account_id = fields.UUIDField(null=False, description="账号ID")
+    provider_id = fields.UUIDField(null=False, description="供应商ID")  
     name = fields.CharField(max_length=255, default="",
                             nullable=False, description="应用名称")
     icon = fields.CharField(max_length=1024, default="",

@@ -1,70 +1,122 @@
 from fastapi import FastAPI, APIRouter
-from internal.handle import AppHandler, BuiltinToolHandler
+from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler
 from injector import inject
 from pydantic import BaseModel
-from internal.schema import CompletionRequest
+from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest
 import uuid
 
 
 @inject
-class Router:
+class AppRouter:
+    """应用相关路由独立处理器"""
     app_handler: AppHandler
-    builtin_tool_handler: BuiltinToolHandler
 
-    def __init__(self, app_handler: AppHandler, builtin_tool_handler: BuiltinToolHandler):
-        self.router = APIRouter()
+    def __init__(self, app_handler: AppHandler):
         self.app_handler = app_handler
-        self.builtin_tool_handler = builtin_tool_handler
-        self._register_routes()
-        self._register_builtin_tool_routes()
 
-    def _register_routes(self):
-        @self.router.get("/ping")
+    def get_router(self) -> APIRouter:
+        """创建应用路由实例"""
+        router = APIRouter(prefix="/apps")
+
+        @router.get("/ping")
         async def ping():
             return await self.app_handler.ping()
 
-        @self.router.post("/apps/{app_id}/debug")
+        @router.post("/{app_id}/debug")
         async def debug(request: CompletionRequest, app_id: uuid.UUID):
             return await self.app_handler.debug(request.query, app_id)
 
-        @self.router.get("/test_db")
+        @router.get("/test_db")
         async def test_db():
             return await self.app_handler.test_db()
 
-        @self.router.post("/app")
+        @router.post("/")
         async def create_app():
             return await self.app_handler.create_app()
 
-        @self.router.get("/app/{app_id}")
+        @router.get("/{app_id}")
         async def get_app(app_id: uuid.UUID):
             return await self.app_handler.get_app(app_id)
 
-        @self.router.post("/app/{app_id}")
+        @router.put("/{app_id}")
         async def update_app(app_id: uuid.UUID):
             return await self.app_handler.update_app(app_id)
 
-        @self.router.delete("/app/{app_id}")
+        @router.delete("/{app_id}")
         async def delete_app(app_id: uuid.UUID):
             return await self.app_handler.delete_app(app_id)
 
-    def _register_builtin_tool_routes(self):
-        @self.router.get("/builtin-tools")
+        return router
+
+
+@inject
+class BuiltinToolRouter:
+    """内置工具路由独立处理器"""
+    builtin_tool_handler: BuiltinToolHandler
+
+    def __init__(self, builtin_tool_handler: BuiltinToolHandler):
+        self.builtin_tool_handler = builtin_tool_handler
+
+    def get_router(self) -> APIRouter:
+        """创建内置工具路由实例"""
+        router = APIRouter(prefix="/builtin-tools")
+
+        @router.get("/")
         async def get_builtin_tools():
             return await self.builtin_tool_handler.get_builtin_tools()
-        
-        @self.router.get("/builtin-tools/categories")
+
+        @router.get("/categories")
         async def get_categories():
             return await self.builtin_tool_handler.get_categories()
-        
-        @self.router.get("/builtin-tools/{provider_name}/icon")
+
+        @router.get("/{provider_name}/icon")
         async def get_provider_icon(provider_name: str):
             return await self.builtin_tool_handler.get_provider_icon(provider_name)
-        
-        @self.router.get("/builtin-tools/{provider_name}/{tool_name}")
+
+        @router.get("/{provider_name}/{tool_name}")
         async def get_provider_tool(provider_name: str, tool_name: str):
             return await self.builtin_tool_handler.get_provider_tool(provider_name, tool_name)
-        
-        
 
-    def register_router(self, app: FastAPI):
-        app.include_router(self.router)
+        return router
+
+
+@inject
+class ApiToolRouter:
+    """API工具路由独立处理器"""
+    api_tool_handler: ApiToolHandler
+
+    def __init__(self, api_tool_handler: ApiToolHandler):
+        self.api_tool_handler = api_tool_handler
+
+    def get_router(self) -> APIRouter:
+        """创建API工具路由实例"""
+        router = APIRouter(prefix="/api-tools")
+
+        @router.post("/validate-openapi-schema")
+        async def validate_api_tool(request: ValidateOpenApiSchemaRequest):
+            return await self.api_tool_handler.validate_openapi_schema(request)
+
+        return router
+
+
+@inject
+class Router:
+    """主路由器，统一管理所有独立的路由"""
+    app_router: AppRouter
+    builtin_tool_router: BuiltinToolRouter
+    api_tool_router: ApiToolRouter
+
+    def __init__(self,
+                 app_router: AppRouter,
+                 builtin_tool_router: BuiltinToolRouter,
+                 api_tool_router: ApiToolRouter):
+        self.app_router = app_router
+        self.builtin_tool_router = builtin_tool_router
+        self.api_tool_router = api_tool_router
+
+    def register_routes(self, app: FastAPI):
+        """注册所有独立的路由到FastAPI应用"""
+        app.include_router(self.app_router.get_router())
+        app.include_router(
+            self.builtin_tool_router.get_router())
+        app.include_router(self.api_tool_router.get_router())

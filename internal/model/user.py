@@ -4,7 +4,7 @@ from tortoise import fields
 
 class User(Model):
     """用户模型"""
-    id = fields.IntField(pk=True, description="用户ID")
+    id = fields.IntField(primary_key=True, description="用户ID")
     username = fields.CharField(max_length=50, unique=True, description="用户名")
     password = fields.CharField(max_length=100, description="密码")
     email = fields.CharField(max_length=100, unique=True, description="邮箱")

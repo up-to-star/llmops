@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 import yaml
 import os
 from .tool_entity import ToolEntity
@@ -32,9 +32,7 @@ class Provider(BaseModel):
         super().__init__(**kwargs)
         self._provider_init()
 
-    class Config:
-        """Pydantic配置类"""
-        protected_namespaces = ()
+    model_config = ConfigDict(protected_namespaces=())
 
     def get_tool(self, tool_name: str) -> Any:
         """根据工具名称获取服务商的工具函数"""

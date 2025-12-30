@@ -6,12 +6,13 @@ from internal.router import Router
 from pkg.response import Response, HttpCode
 from internal.exception import CustomException
 from config.config import init_db, close_db
+from contextlib import asynccontextmanager
 
 
 class Http(FastAPI):
     def __init__(self, *args, router: Router, **kwargs):
         super().__init__(*args, lifespan=self.lifespan, **kwargs)
-        router.register_router(self)
+        router.register_routes(self)
         # 添加自定义验证异常处理器
         self.add_exception_handler(
             RequestValidationError, self._validation_exception_handler)
@@ -27,7 +28,7 @@ class Http(FastAPI):
         #     allow_headers=["*"],
         # )
 
-
+    @asynccontextmanager
     async def lifespan(self, app: FastAPI):
         await init_db()
         yield

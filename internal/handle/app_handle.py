@@ -132,12 +132,10 @@ class AppHandler:
         return response
 
     async def ping(self):
-        providers = self.provider_factory.get_providers()
-        
         response = Response(
             code=HttpCode.SUCCESS,
             message="success",
-            data={"providers": [provider.dict() for provider in providers]}
+            data={"message": "pong"}
         )
         return response
 
