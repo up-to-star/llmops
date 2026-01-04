@@ -1,6 +1,7 @@
 from tortoise.models import Model
 from tortoise import fields
 import uuid
+from typing import Optional
 
 
 class ApiToolProvider(Model):
@@ -30,7 +31,7 @@ class ApiTool(Model):
     id = fields.UUIDField(
         primary_key=True, default_factory=uuid.uuid4, description="工具ID")
     account_id = fields.UUIDField(null=False, description="账号ID")
-    provider_id = fields.UUIDField(null=False, description="供应商ID")
+    # provider_id = fields.UUIDField(null=False, description="供应商ID")
     name = fields.CharField(max_length=255, default="",
                             null=False, description="工具名称")
     description = fields.TextField(
@@ -39,8 +40,12 @@ class ApiTool(Model):
                            null=False, description="工具URL")
     method = fields.CharField(max_length=255, default="",
                               null=False, description="工具方法")
+    parameters = fields.JSONField(
+        default="", null=False, description="工具参数")
     update_at = fields.DatetimeField(auto_now=True, description="更新时间")
     created_at = fields.DatetimeField(auto_now_add=True, description="创建时间")
+    provider: Optional[ApiToolProvider] = fields.ForeignKeyField(
+        "models.ApiToolProvider", related_name="tools", null=False)
 
     class Meta:
         table = "api_tool"

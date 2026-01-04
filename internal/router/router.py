@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter
 from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler
 from injector import inject
 from pydantic import BaseModel
-from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest
+from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest, CreateApiToolRequest, GetApiToolProvidersWithPageRequest
 import uuid
 
 
@@ -95,6 +95,26 @@ class ApiToolRouter:
         @router.post("/validate-openapi-schema")
         async def validate_api_tool(request: ValidateOpenApiSchemaRequest):
             return await self.api_tool_handler.validate_openapi_schema(request)
+
+        @router.post("/")
+        async def create_api_tool(request: CreateApiToolRequest):
+            return await self.api_tool_handler.create_api_tool(request)
+
+        @router.get("/{provider_id}")
+        async def get_api_tool_provider(provider_id: uuid.UUID):
+            return await self.api_tool_handler.get_api_tool_provider(provider_id)
+
+        @router.get("/{provider_id}/{tool_name}")
+        async def get_api_tool(provider_id: uuid.UUID, tool_name: str):
+            return await self.api_tool_handler.get_api_tool(provider_id, tool_name)
+
+        @router.post("/{provider_id}/delete")
+        async def delete_api_tool_provider(provider_id: uuid.UUID):
+            return await self.api_tool_handler.delete_api_tool_provider(provider_id)
+
+        @router.post("/pages")
+        async def get_api_tool_providers_with_page(request: GetApiToolProvidersWithPageRequest):
+            return await self.api_tool_handler.get_api_tool_providers_with_page(request)
 
         return router
 
