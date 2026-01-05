@@ -105,3 +105,15 @@ class GetApiToolResponse(Schema):
                 "headers": provider.headers
             }
         }
+
+
+class UpdateApiToolProviderRequest(BaseModel):
+    """更新自定义API工具供应商请求"""
+    name: str = Field(..., description="自定义API工具名称",
+                      min_length=1, max_length=30)
+    icon: HttpUrl = Field(..., description="自定义API工具图标")
+    openapi_schema: str = Field(..., description="自定义API工具OpenAPI schema")
+    headers: list[HeaderItem] = Field(
+        default_factory=list, description="请求头列表")
+
+    

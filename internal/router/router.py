@@ -2,7 +2,7 @@ from fastapi import FastAPI, APIRouter
 from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler
 from injector import inject
 from pydantic import BaseModel
-from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest, CreateApiToolRequest, GetApiToolProvidersWithPageRequest
+from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest, CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest
 import uuid
 
 
@@ -115,6 +115,10 @@ class ApiToolRouter:
         @router.post("/pages")
         async def get_api_tool_providers_with_page(request: GetApiToolProvidersWithPageRequest):
             return await self.api_tool_handler.get_api_tool_providers_with_page(request)
+
+        @router.post("/{provider_id}/update")
+        async def update_api_tool_provider(provider_id: uuid.UUID, request: UpdateApiToolProviderRequest):
+            return await self.api_tool_handler.update_api_tool_provider(provider_id, request)
 
         return router
 

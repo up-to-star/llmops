@@ -1,7 +1,7 @@
 from injector import inject
 from dataclasses import dataclass
 from internal.schema import (ValidateOpenApiSchemaRequest, CreateApiToolRequest,
-                             GetApiToolProviderResponse, GetApiToolResponse, GetApiToolProvidersWithPageRequest, GetApiToolProvidersWithPageResponse)
+                             GetApiToolProviderResponse, GetApiToolResponse, GetApiToolProvidersWithPageRequest, GetApiToolProvidersWithPageResponse, UpdateApiToolProviderRequest)
 from internal.service import ApiToolService
 from pkg.response import HttpCode, Response
 from pkg.paginator import PageModel
@@ -101,5 +101,15 @@ class ApiToolHandler:
         return Response(
             code=HttpCode.SUCCESS,
             message="OpenAPI schema验证成功",
+            data={}
+        )
+
+    async def update_api_tool_provider(self, provider_id: uuid.UUID, req: UpdateApiToolProviderRequest):
+        """更新自定义API工具供应商"""
+        await self.api_tool_service.update_api_tool_provider(provider_id, req)
+
+        return Response(
+            code=HttpCode.SUCCESS,
+            message="自定义API工具供应商更新成功",
             data={}
         )

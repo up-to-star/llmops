@@ -4,10 +4,11 @@ from typing import Any
 from internal.exception import ValidationException, NotFoundException
 from internal.core.tools.api_tools.entities import OpenAPISchema
 from internal.model import ApiToolProvider, ApiTool
-from internal.schema import CreateApiToolRequest, GetApiToolProvidersWithPageRequest
+from internal.schema import CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest
 import json
 import uuid
 from pkg.paginator import BaseQuery, Paginator
+from tortoise.expressions import Q
 
 
 @inject
@@ -98,5 +99,40 @@ class ApiToolService:
         query = BaseQuery(ApiToolProvider, req.current_page, req.page_size)
         api_tool_providers, paginator = await query.paginate(filter)
 
-        
         return api_tool_providers, paginator
+
+    async def update_api_tool_provider(self, provider_id: uuid.UUID, req: UpdateApiToolProviderRequest):
+        """更新自定义API工具供应商"""
+        account_id = "550e8400-e29b-41d4-a716-446655440000"
+        api_tool_provider = await ApiToolProvider.filter(id=provider_id).first()
+        if not api_tool_provider or str(api_tool_provider.account_id) != account_id:
+            raise NotFoundException(f"API工具供应商 {provider_id} 不存在")
+
+        openapi_schema = await self.parse_openapi_schema(req.openapi_schema)
+        check_api_tool_provider = await ApiToolProvider.filter(
+            Q(account_id=account_id, name=req.name) & ~Q(id=provider_id)
+        ).first()
+        if check_api_tool_provider:
+            raise ValidationException(f"API工具供应商 {req.name} 已存在")
+        await ApiTool.filter(provider=api_tool_provider.id, account_id=account_id).delete()
+
+        api_tool_provider.name = req.name
+        api_tool_provider.icon = req.icon
+        serializable_headers = [item.model_dump() for item in req.headers]
+        api_tool_provider.headers = serializable_headers
+        api_tool_provider.openapi_schema = req.openapi_schema
+
+        for path, path_item in openapi_schema.paths.items():
+            for method, operation in path_item.items():
+                api_tool = ApiTool(
+                    account_id=account_id,
+                    provider_id=api_tool_provider.id,
+                    name=operation.get("operationId"),
+                    description=operation.get("description"),
+                    url=f"{openapi_schema.server}{path}",
+                    method=method.upper(),
+                    parameters=operation.get("parameters", []),
+                )
+                await api_tool.save()
+
+        await api_tool_provider.save()
