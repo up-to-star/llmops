@@ -3,6 +3,7 @@ from injector import inject
 from typing import Any
 from internal.exception import ValidationException, NotFoundException
 from internal.core.tools.api_tools.entities import OpenAPISchema
+from internal.core.tools.api_tools.providers import ApiProviderManager
 from internal.model import ApiToolProvider, ApiTool
 from internal.schema import CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest
 import json
@@ -15,6 +16,7 @@ from tortoise.expressions import Q
 @dataclass
 class ApiToolService:
     """自定义API工具服务类"""
+    api_provider_manager: ApiProviderManager
 
     @classmethod
     async def parse_openapi_schema(cls, openapi_schema_str: str) -> Any:

@@ -19,6 +19,13 @@ class ParamaterType(str, Enum):
     FLOAT = "float"
     BOOL = "bool"
 
+ParameterTypeMap = {
+    ParamaterType.STR: str,
+    ParamaterType.INT: int,
+    ParamaterType.FLOAT: float,
+    ParamaterType.BOOL: bool,
+}
+
 
 class OpenAPISchema(BaseModel):
     """OpenAPI 规范的实体类"""
