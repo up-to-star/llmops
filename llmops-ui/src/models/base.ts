@@ -5,7 +5,7 @@ export type BaseResponse<T> = {
 }
 
 export type BasePaginatorResponse<T> = BaseResponse<{
-  list: Array<T>
+  data: Array<T>
   paginator: {
     total_page: number
     total_record: number
