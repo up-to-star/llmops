@@ -1,4 +1,4 @@
-from injector import Injector
+from injector import inject
 from pydantic import BaseModel, create_model, Field
 from dataclasses import dataclass
 from langchain.tools import BaseTool
@@ -8,7 +8,7 @@ from internal.core.tools.api_tools.entities import ParamaterType, ParameterTypeM
 import requests
 
 
-@Injector
+@inject
 @dataclass
 class ApiProviderManager(BaseModel):
 

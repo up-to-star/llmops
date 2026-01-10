@@ -30,7 +30,7 @@ class AppRouter:
         async def test_db():
             return await self.app_handler.test_db()
 
-        @router.post("/")
+        @router.post("")
         async def create_app():
             return await self.app_handler.create_app()
 
@@ -61,7 +61,7 @@ class BuiltinToolRouter:
         """创建内置工具路由实例"""
         router = APIRouter(prefix="/builtin-tools")
 
-        @router.get("/")
+        @router.get("")
         async def get_builtin_tools():
             return await self.builtin_tool_handler.get_builtin_tools()
 
@@ -96,7 +96,7 @@ class ApiToolRouter:
         async def validate_api_tool(request: ValidateOpenApiSchemaRequest):
             return await self.api_tool_handler.validate_openapi_schema(request)
 
-        @router.post("/")
+        @router.post("")
         async def create_api_tool(request: CreateApiToolRequest):
             return await self.api_tool_handler.create_api_tool(request)
 
