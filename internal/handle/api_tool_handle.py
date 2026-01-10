@@ -68,6 +68,7 @@ class ApiToolHandler:
                 id=provider.id,
                 name=provider.name,
                 icon=provider.icon,
+                description=provider.description,
                 openapi_schema=provider.openapi_schema,
                 headers=[
                     {"key": item['key'], "value": item['value']}

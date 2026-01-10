@@ -16,6 +16,5 @@ export const getApiToolProvidersWithPage = async (
       search_word,
     },
   })
-  console.log(res)
   return res as GetApiToolProvidersWithPageResponse
 }

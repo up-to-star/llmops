@@ -72,6 +72,7 @@ class GetApiToolProvidersWithPageResponse(BaseModel):
     id: uuid.UUID = Field(description="自定义API工具供应商ID")
     name: str = Field(description="自定义API工具供应商名称")
     icon: str = Field(description="自定义API工具供应商图标")
+    description: str = Field(description="自定义API工具供应商描述")
     openapi_schema: str = Field(description="自定义API工具供应商OpenAPI schema")
     headers: list[HeaderItem] = Field(
         default_factory=list, description="请求头列表")
@@ -115,5 +116,3 @@ class UpdateApiToolProviderRequest(BaseModel):
     openapi_schema: str = Field(..., description="自定义API工具OpenAPI schema")
     headers: list[HeaderItem] = Field(
         default_factory=list, description="请求头列表")
-
-    

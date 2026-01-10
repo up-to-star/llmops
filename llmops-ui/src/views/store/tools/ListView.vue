@@ -26,14 +26,14 @@ const showIdx = ref<number>(-1)
 
 onMounted(async () => {
   const resp = await getCategories()
-  Object.assign(categories, resp.data)
+  categories.push(...resp.data)
 })
 
 onMounted(async () => {
   try {
     loading.value = true
     const resp = await getBuiltinTools()
-    Object.assign(providers, resp.data)
+    providers.push(...resp.data)
   } finally {
     loading.value = false
   }
