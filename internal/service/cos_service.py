@@ -11,6 +11,9 @@ import uuid
 from internal.model import UploadFile as UploadFileModel
 from .upload_file_service import UploadFileService
 import hashlib
+from internal.lib.logger import get_module_logger, log_function_call
+
+logger = get_module_logger(__name__)
 
 dotenv.load_dotenv()
 
@@ -41,6 +44,7 @@ class CosService:
         '''获取COS存储桶名称'''
         return os.getenv("COS_BUCKET")
 
+    @log_function_call()
     async def upload_file(self, file: UploadFile, only_image: bool = False) -> UploadFileModel:
         '''上传文件到COS'''
         account_id = '550e8400-e29b-41d4-a716-446655440000'
@@ -62,6 +66,7 @@ class CosService:
                 Body=file_content,
                 Key=upload_filename,
             )
+            logger.info(f"文件 {filename} 上传到COS成功，路径为 {upload_filename}")
         except Exception as e:
             raise FailException(f"上传文件到COS失败: {e}, 请稍后重试")
 
