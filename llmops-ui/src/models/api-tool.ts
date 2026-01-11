@@ -10,3 +10,26 @@ export type GetApiToolProvidersWithPageResponse = BasePaginatorResponse<{
   tools: Array<any>
   create_at: number
 }>
+
+export type CreateApiToolProviderRequest = {
+  name: string
+  icon: string
+  openapi_schema: string
+  headers: Array<any>
+}
+
+export type UpdateApiToolProviderRequest = {
+  name: string
+  icon: string
+  openapi_schema: string
+  headers: Array<any>
+}
+
+export type GetApiToolProviderResponse = {
+  id: string
+  name: string
+  icon: string
+  openapi_schema: string
+  headers: Array<any>
+  create_at: number
+}

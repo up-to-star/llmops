@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
+const createType = ref<string>('')
 
 // 搜索词的响应式变量
 const searchWord = ref(route.query?.search_word || '')
@@ -23,6 +24,10 @@ watch(
     searchWord.value = route.query?.search_word || ''
   },
 )
+
+const updateCreateType = (value: string) => {
+  createType.value = value
+}
 </script>
 
 <template>
@@ -42,7 +47,11 @@ watch(
         <a-button v-if="route.path.startsWith('/space/apps')" type="primary" class="!rounded-lg"
           >创建 AI 应用</a-button
         >
-        <a-button v-if="route.path.startsWith('/space/tools')" type="primary" class="!rounded-lg"
+        <a-button
+          v-if="route.path.startsWith('/space/tools')"
+          type="primary"
+          class="!rounded-lg"
+          @click="createType = 'tool'"
           >创建自定义插件</a-button
         >
         <a-button
@@ -99,7 +108,7 @@ watch(
     </div>
 
     <!-- 中间内容 -->
-    <router-view></router-view>
+    <router-view :create-type="createType" @update-create-type="updateCreateType"></router-view>
   </div>
 </template>
 
