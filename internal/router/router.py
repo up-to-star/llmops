@@ -1,9 +1,33 @@
 from fastapi import FastAPI, APIRouter
-from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler
+from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler, UploadFileHandler
 from injector import inject
-from pydantic import BaseModel
+from fastapi import Depends
 from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest, CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest
 import uuid
+from internal.schema import UploadFileRequest, UploadImageRequest
+
+
+@inject
+class UploadFileRouter:
+    """文件上传路由独立处理器"""
+    upload_file_handler: UploadFileHandler
+
+    def __init__(self, upload_file_handler: UploadFileHandler):
+        self.upload_file_handler = upload_file_handler
+
+    def get_router(self) -> APIRouter:
+        """创建文件上传路由实例"""
+        router = APIRouter(prefix="/upload-files")
+
+        @router.post("/file")
+        async def upload_file(request: UploadFileRequest = Depends()):
+            return await self.upload_file_handler.upload_file(request)
+
+        @router.post("/image")
+        async def upload_image(request: UploadImageRequest = Depends()):
+            return await self.upload_file_handler.upload_image(request)
+
+        return router
 
 
 @inject
@@ -129,14 +153,17 @@ class Router:
     app_router: AppRouter
     builtin_tool_router: BuiltinToolRouter
     api_tool_router: ApiToolRouter
+    upload_file_router: UploadFileRouter
 
     def __init__(self,
                  app_router: AppRouter,
                  builtin_tool_router: BuiltinToolRouter,
-                 api_tool_router: ApiToolRouter):
+                 api_tool_router: ApiToolRouter,
+                 upload_file_router: UploadFileRouter):
         self.app_router = app_router
         self.builtin_tool_router = builtin_tool_router
         self.api_tool_router = api_tool_router
+        self.upload_file_router = upload_file_router
 
     def register_routes(self, app: FastAPI):
         """注册所有独立的路由到FastAPI应用"""
@@ -144,3 +171,4 @@ class Router:
         app.include_router(
             self.builtin_tool_router.get_router())
         app.include_router(self.api_tool_router.get_router())
+        app.include_router(self.upload_file_router.get_router())
