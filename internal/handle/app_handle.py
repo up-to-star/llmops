@@ -10,6 +10,7 @@ from langchain.chat_models import init_chat_model
 from langchain.agents import create_agent, AgentState
 from langgraph.checkpoint.memory import InMemorySaver
 from internal.core.tools.builtin_tools.providers import BuiltinProviderManager
+from internal.tasks.demo_task import demo_task
 
 
 class CustomAgentState(AgentState):
@@ -132,6 +133,7 @@ class AppHandler:
         return response
 
     async def ping(self):
+        demo_task.delay(uuid.uuid4())
         response = Response(
             code=HttpCode.SUCCESS,
             message="success",

@@ -14,3 +14,4 @@ data/
 migrations/
 storage/logs/
 .vscode/    
+logs/

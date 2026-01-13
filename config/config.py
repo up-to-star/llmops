@@ -4,6 +4,9 @@ from tortoise import Tortoise
 import dotenv
 from fastapi import FastAPI
 from .logger import get_logger
+from celery import Celery
+
+logger = get_logger(__name__)
 
 
 dotenv.load_dotenv()
@@ -71,3 +74,25 @@ async def close_redis(app: FastAPI):
         await app.state.redis.close()
     if hasattr(app.state, "redis_pool"):
         app.state.redis_pool.disconnect()
+
+celery_app = Celery(
+    "llmops",
+    broker=os.getenv(
+        f"redis://{os.getenv('REDIS_HOST', 'localhost')}:{os.getenv('REDIS_PORT', 16379)}/{os.getenv('CELERY_BROKER_DB', 1)}",
+        "redis://localhost:16379/1"),
+    backend=os.getenv(f"redis://{os.getenv('REDIS_HOST', 'localhost')}:{os.getenv('REDIS_PORT', 16379)}/{os.getenv('CELERY_RESULT_BACKEND_DB', 1)}",
+                      "redis://localhost:16379/1"),
+    include=["internal.tasks.demo_task"]
+)
+
+celery_app.conf.update(
+    task_serializer='json',
+    accept_content=['json'],
+    result_serializer='json',
+    timezone='Asia/Shanghai',
+    enable_utc=True,
+    task_track_started=True,
+    task_time_limit=3600,
+    task_ignore_result=bool(os.getenv("CELERY_TASK_IGNORE_RESULT", False)),
+    result_expires=int(os.getenv("CELERY_RESULT_EXPIRES", 3600)),
+)
