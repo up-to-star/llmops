@@ -1,10 +1,11 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, Depends
 from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler, UploadFileHandler
 from injector import inject
 from fastapi import Depends
 from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest, CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest
 import uuid
 from internal.schema import UploadFileRequest, UploadImageRequest
+from internal.utils.dependencies import get_redis
 
 
 @inject
@@ -49,6 +50,16 @@ class AppRouter:
         @router.post("/{app_id}/debug")
         async def debug(request: CompletionRequest, app_id: uuid.UUID):
             return await self.app_handler.debug(request.query, app_id)
+
+        @router.post("/deubg_redis/{key}/{value}")
+        async def debug_redis_set(key: str, value: str, redis = Depends(get_redis)):
+            res = await redis.set(key, value, ex=3600)
+            return {"message": res}
+        
+        @router.get("/deubg_redis/{key}")
+        async def debug_redis_get(key: str, redis = Depends(get_redis)):
+            res = await redis.get(key)
+            return {"message": res}
 
         @router.get("/test_db")
         async def test_db():

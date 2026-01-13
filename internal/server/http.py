@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from internal.router import Router
 from pkg.response import Response, HttpCode
 from internal.exception import CustomException
-from config.config import init_db, close_db
+from config.config import init_db, close_db, init_redis, close_redis
 from contextlib import asynccontextmanager
 
 
@@ -19,7 +19,7 @@ class Http(FastAPI):
         # 添加自定义异常处理器
         self.add_exception_handler(
             CustomException, self._custom_exception_handler)
-        
+
         # self.add_middleware(
         #     CORSMiddleware,
         #     allow_origins=["*"],
@@ -31,8 +31,10 @@ class Http(FastAPI):
     @asynccontextmanager
     async def lifespan(self, app: FastAPI):
         await init_db()
+        await init_redis(app)
         yield
         await close_db()
+        await close_redis(app)
 
     async def _custom_exception_handler(self, request: Request, exc: CustomException):
 
