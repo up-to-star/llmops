@@ -2,6 +2,7 @@ from .user import User
 from .app import App
 from .api_tool import ApiTool, ApiToolProvider
 from .upload_file import UploadFile
+from .dataset import Dataset, Document, Segment, KeywordTable, DatasetQuery, ProcessRule, AppDatasetJoin
 
 
 __all__ = [
@@ -9,5 +10,12 @@ __all__ = [
     "App",
     "ApiTool",
     "ApiToolProvider",
-    "UploadFile"
+    "UploadFile",
+    "Dataset",
+    "Document",
+    "Segment",
+    "KeywordTable",
+    "DatasetQuery",
+    "ProcessRule",
+    "AppDatasetJoin",
 ]
