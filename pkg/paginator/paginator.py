@@ -44,7 +44,7 @@ class BaseQuery:
             page_size=self.page_size
         )
 
-    async def paginate(self, select: QuerySet[Any]) -> PageModel:
+    async def paginate(self, select: QuerySet[Any]):
         """
         对传入的查询进行分页
         :param select: Tortoise 查询集（QuerySet）

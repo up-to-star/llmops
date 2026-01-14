@@ -1,11 +1,42 @@
 from fastapi import FastAPI, APIRouter, Depends
-from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler, UploadFileHandler
+from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler, UploadFileHandler, DatasetHandler
 from injector import inject
 from fastapi import Depends
-from internal.schema import CompletionRequest, ValidateOpenApiSchemaRequest, CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest
+from internal.schema import (CompletionRequest, ValidateOpenApiSchemaRequest,
+                             CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest, CreateDatasetRequest, UpdateDatasetRequest, GetDatasetWithPageRequest)
 import uuid
 from internal.schema import UploadFileRequest, UploadImageRequest
 from internal.utils.dependencies import get_redis
+
+
+@inject
+class DatasetRouter:
+    dataset_handler: DatasetHandler
+
+    def __init__(self, dataset_handler: DatasetHandler):
+        self.dataset_handler = dataset_handler
+
+    def get_router(self) -> APIRouter:
+        """创建数据集路由实例"""
+        router = APIRouter(prefix="/datasets")
+
+        @router.post("")
+        async def create_dataset(request: CreateDatasetRequest):
+            return await self.dataset_handler.create_dataset(request)
+
+        @router.get("/{dataset_id}")
+        async def get_dataset(dataset_id: uuid.UUID):
+            return await self.dataset_handler.get_dataset(dataset_id)
+
+        @router.post("/{dataset_id}")
+        async def update_dataset(dataset_id: uuid.UUID, request: UpdateDatasetRequest):
+            return await self.dataset_handler.update_dataset(dataset_id, request)
+
+        @router.get("")
+        async def get_datasets_with_page(current_page: int = 1, page_size: int = 10, search: str = ""):
+            return await self.dataset_handler.get_datasets_with_page(request=GetDatasetWithPageRequest(current_page=current_page, page_size=page_size, search=search))
+
+        return router
 
 
 @inject
@@ -52,12 +83,12 @@ class AppRouter:
             return await self.app_handler.debug(request.query, app_id)
 
         @router.post("/deubg_redis/{key}/{value}")
-        async def debug_redis_set(key: str, value: str, redis = Depends(get_redis)):
+        async def debug_redis_set(key: str, value: str, redis=Depends(get_redis)):
             res = await redis.set(key, value, ex=3600)
             return {"message": res}
-        
+
         @router.get("/deubg_redis/{key}")
-        async def debug_redis_get(key: str, redis = Depends(get_redis)):
+        async def debug_redis_get(key: str, redis=Depends(get_redis)):
             res = await redis.get(key)
             return {"message": res}
 
@@ -165,16 +196,19 @@ class Router:
     builtin_tool_router: BuiltinToolRouter
     api_tool_router: ApiToolRouter
     upload_file_router: UploadFileRouter
+    dataset_router: DatasetRouter
 
     def __init__(self,
                  app_router: AppRouter,
                  builtin_tool_router: BuiltinToolRouter,
                  api_tool_router: ApiToolRouter,
-                 upload_file_router: UploadFileRouter):
+                 upload_file_router: UploadFileRouter,
+                 dataset_router: DatasetRouter):
         self.app_router = app_router
         self.builtin_tool_router = builtin_tool_router
         self.api_tool_router = api_tool_router
         self.upload_file_router = upload_file_router
+        self.dataset_router = dataset_router
 
     def register_routes(self, app: FastAPI):
         """注册所有独立的路由到FastAPI应用"""
@@ -183,3 +217,4 @@ class Router:
             self.builtin_tool_router.get_router())
         app.include_router(self.api_tool_router.get_router())
         app.include_router(self.upload_file_router.get_router())
+        app.include_router(self.dataset_router.get_router())

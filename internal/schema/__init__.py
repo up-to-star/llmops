@@ -2,6 +2,7 @@ from .app_schemal import CompletionRequest
 from .api_tool_schema import (ValidateOpenApiSchemaRequest, CreateApiToolRequest,
                               GetApiToolProviderResponse, GetApiToolResponse, GetApiToolProvidersWithPageRequest, GetApiToolProvidersWithPageResponse, UpdateApiToolProviderRequest)
 from .upload_file_schema import UploadFileRequest, UploadFileResponse, UploadImageRequest
+from .dataset_schema import CreateDatasetRequest, GetDatasetResponse, UpdateDatasetRequest, GetDatasetWithPageRequest, GetDatasetWithPageResponse
 
 __all__ = [
     "CompletionRequest",
@@ -14,5 +15,10 @@ __all__ = [
     "GetApiToolProvidersWithPageResponse",
     "UploadFileRequest",
     "UploadImageRequest",
-    "UploadFileResponse"
+    "UploadFileResponse",
+    "CreateDatasetRequest",
+    "GetDatasetResponse",
+    "UpdateDatasetRequest",
+    "GetDatasetWithPageRequest",
+    "GetDatasetWithPageResponse",
 ]

@@ -52,6 +52,7 @@ class Segment(Model):
     id = fields.UUIDField(
         primary_key=True, default_factory=uuid.uuid4, description="段落ID")
     account_id = fields.UUIDField(null=False, description="账号ID")
+    dataset_id = fields.UUIDField(null=False, description="数据集ID")
     document_id = fields.UUIDField(null=False, description="文档ID")
     node_id = fields.UUIDField(null=False, description="节点ID")
     position = fields.IntField(null=False, default=1, description="段落位置")
@@ -108,7 +109,8 @@ class ProcessRule(Model):
         primary_key=True, default_factory=uuid.uuid4, description="规则ID")
     account_id = fields.UUIDField(null=False, description="账号ID")
     dataset_id = fields.UUIDField(null=False, description="数据集ID")
-    mode = fields.CharField(max_length=255, null=False, default="automic", description="模式")
+    mode = fields.CharField(max_length=255, null=False,
+                            default="automic", description="模式")
     rule = fields.JSONField(null=False, default_factory=list, description="规则")
     created_at = fields.DatetimeField(auto_now_add=True, description="创建时间")
     update_at = fields.DatetimeField(auto_now=True, description="更新时间")

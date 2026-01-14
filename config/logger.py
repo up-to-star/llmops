@@ -7,7 +7,7 @@ from typing import Optional
 
 class ColoredFormatter(logging.Formatter):
     """带颜色的日志格式化器"""
-    
+
     COLORS = {
         'DEBUG': '\033[36m',      # 青色
         'INFO': '\033[32m',       # 绿色
@@ -16,10 +16,10 @@ class ColoredFormatter(logging.Formatter):
         'CRITICAL': '\033[35m',    # 紫色
     }
     RESET = '\033[0m'
-    
+
     def __init__(self, fmt=None, datefmt=None, style='%'):
         super().__init__(fmt, datefmt, style)
-    
+
     def format(self, record):
         levelname = record.levelname
         if levelname in self.COLORS:
@@ -73,12 +73,12 @@ def setup_logging(
     root_logger.handlers.clear()
 
     colored_formatter = ColoredFormatter(
-        fmt="%(levelname)s: [%(asctime)s] - %(name)s - %(filename)s:%(lineno)d - %(message)s",
+        fmt="[%(asctime)s - %(levelname)s]:   %(name)s - %(filename)s:%(lineno)d - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     )
-    
+
     plain_formatter = logging.Formatter(
-        fmt="%(levelname)s [%(asctime)s] - %(name)s - %(filename)s:%(lineno)d - %(message)s",
+        fmt="[%(asctime)s - %(levelname)s]:   %(name)s - %(filename)s:%(lineno)d - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     )
 
