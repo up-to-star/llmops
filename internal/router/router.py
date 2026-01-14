@@ -178,9 +178,10 @@ class ApiToolRouter:
         async def delete_api_tool_provider(provider_id: uuid.UUID):
             return await self.api_tool_handler.delete_api_tool_provider(provider_id)
 
-        @router.post("/pages")
-        async def get_api_tool_providers_with_page(request: GetApiToolProvidersWithPageRequest):
-            return await self.api_tool_handler.get_api_tool_providers_with_page(request)
+        @router.get("")
+        async def get_api_tool_providers_with_page(current_page: int = 1, page_size: int = 20, search_word: str = ""):
+            return await self.api_tool_handler.get_api_tool_providers_with_page(req=GetApiToolProvidersWithPageRequest(current_page=current_page,
+                                                                                                                       page_size=page_size, search_word=search_word))
 
         @router.post("/{provider_id}/update")
         async def update_api_tool_provider(provider_id: uuid.UUID, request: UpdateApiToolProviderRequest):
