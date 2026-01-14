@@ -6,6 +6,8 @@ from internal.schema import (CreateDatasetRequest, GetDatasetResponse,
 from internal.service import DatasetService, EmbeddingsService, JiebaService
 from pkg.response import Response
 from pkg.paginator import PageModel
+from internal.core.file_extractor import FileExtractor
+from internal.model import UploadFile
 
 
 @inject
@@ -14,12 +16,20 @@ class DatasetHandler:
     dataset_service: DatasetService
     embeddings_service: EmbeddingsService
     jieba_service: JiebaService
+    file_extractor: FileExtractor
 
     async def embeddings_query(self, query: str):
-        keywords = self.jieba_service.extract_keywords(query)
+        # keywords = self.jieba_service.extract_keywords(query)
+        # return Response(
+        #     message=f"Embeddings for {query} retrieved successfully",
+        #     data=keywords
+        # )
+        upload_file = await UploadFile.filter(id="1bd19400-7914-42c5-b995-605529b6238b").first()
+        print(upload_file)
+        content = await self.file_extractor.load(upload_file, True, False)
         return Response(
             message=f"Embeddings for {query} retrieved successfully",
-            data=keywords
+            data=content
         )
 
     async def create_dataset(self, request: CreateDatasetRequest):
