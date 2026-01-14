@@ -29,6 +29,7 @@ dependencies = [
     "tortoise-orm>=0.25.1",
     "uvicorn>=0.38.0",
     "watchfiles>=1.1.1",
+    "weaviate-client>=4.19.2",
 ]
 
 [[tool.uv.index]]
