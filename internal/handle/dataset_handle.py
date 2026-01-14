@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from uuid import UUID
 from internal.schema import (CreateDatasetRequest, GetDatasetResponse,
                              UpdateDatasetRequest, GetDatasetWithPageResponse, GetDatasetWithPageRequest)
-from internal.service import DatasetService, EmbeddingsService
+from internal.service import DatasetService, EmbeddingsService, JiebaService
 from pkg.response import Response
 from pkg.paginator import PageModel
 
@@ -13,12 +13,13 @@ from pkg.paginator import PageModel
 class DatasetHandler:
     dataset_service: DatasetService
     embeddings_service: EmbeddingsService
+    jieba_service: JiebaService
 
     async def embeddings_query(self, query: str):
-        vectors = await self.embeddings_service.embeddings.aembed_query(query)
+        keywords = self.jieba_service.extract_keywords(query)
         return Response(
             message=f"Embeddings for {query} retrieved successfully",
-            data=vectors
+            data=keywords
         )
 
     async def create_dataset(self, request: CreateDatasetRequest):

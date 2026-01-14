@@ -15,3 +15,4 @@ migrations/
 storage/logs/
 .vscode/    
 logs/
+internal/core/embeddings/

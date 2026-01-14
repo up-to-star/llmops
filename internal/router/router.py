@@ -7,6 +7,9 @@ from internal.schema import (CompletionRequest, ValidateOpenApiSchemaRequest,
 import uuid
 from internal.schema import UploadFileRequest, UploadImageRequest
 from internal.utils.dependencies import get_redis
+from config.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 @inject
@@ -20,6 +23,14 @@ class DatasetRouter:
         """创建数据集路由实例"""
         router = APIRouter(prefix="/datasets")
 
+        @router.get("/embeddings")
+        async def embeddings_query(query: str):
+            return await self.dataset_handler.embeddings_query(query)
+
+        @router.get("")
+        async def get_datasets_with_page(current_page: int = 1, page_size: int = 10, search: str = ""):
+            return await self.dataset_handler.get_datasets_with_page(request=GetDatasetWithPageRequest(current_page=current_page, page_size=page_size, search=search))
+
         @router.post("")
         async def create_dataset(request: CreateDatasetRequest):
             return await self.dataset_handler.create_dataset(request)
@@ -31,14 +42,6 @@ class DatasetRouter:
         @router.post("/{dataset_id}")
         async def update_dataset(dataset_id: uuid.UUID, request: UpdateDatasetRequest):
             return await self.dataset_handler.update_dataset(dataset_id, request)
-
-        @router.get("")
-        async def get_datasets_with_page(current_page: int = 1, page_size: int = 10, search: str = ""):
-            return await self.dataset_handler.get_datasets_with_page(request=GetDatasetWithPageRequest(current_page=current_page, page_size=page_size, search=search))
-
-        @router.get("/embeddings")
-        async def embeddings_query(query: str):
-            return await self.dataset_handler.embeddings_query(query)
 
         return router
 
