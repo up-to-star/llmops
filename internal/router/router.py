@@ -36,6 +36,10 @@ class DatasetRouter:
         async def get_datasets_with_page(current_page: int = 1, page_size: int = 10, search: str = ""):
             return await self.dataset_handler.get_datasets_with_page(request=GetDatasetWithPageRequest(current_page=current_page, page_size=page_size, search=search))
 
+        @router.get("/embeddings")
+        async def embeddings_query(query: str):
+            return await self.dataset_handler.embeddings_query(query)
+
         return router
 
 

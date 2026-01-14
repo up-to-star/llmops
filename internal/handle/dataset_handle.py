@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from uuid import UUID
 from internal.schema import (CreateDatasetRequest, GetDatasetResponse,
                              UpdateDatasetRequest, GetDatasetWithPageResponse, GetDatasetWithPageRequest)
-from internal.service import DatasetService
+from internal.service import DatasetService, EmbeddingsService
 from pkg.response import Response
 from pkg.paginator import PageModel
 
@@ -12,6 +12,14 @@ from pkg.paginator import PageModel
 @dataclass
 class DatasetHandler:
     dataset_service: DatasetService
+    embeddings_service: EmbeddingsService
+
+    async def embeddings_query(self, query: str):
+        vectors = await self.embeddings_service.embeddings.aembed_query(query)
+        return Response(
+            message=f"Embeddings for {query} retrieved successfully",
+            data=vectors
+        )
 
     async def create_dataset(self, request: CreateDatasetRequest):
         dataset = await self.dataset_service.create_dataset(request)
