@@ -24,7 +24,7 @@ class DatasetHandler:
         #     message=f"Embeddings for {query} retrieved successfully",
         #     data=keywords
         # )
-        upload_file = await UploadFile.filter(id="1bd19400-7914-42c5-b995-605529b6238b").first()
+        upload_file = await UploadFile.filter(id="ef890894-1738-40fb-b660-b95a3f2d486b").first()
         print(upload_file)
         content = await self.file_extractor.load(upload_file, True, False)
         return Response(

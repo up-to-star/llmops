@@ -73,7 +73,7 @@ async def close_redis(app: FastAPI):
     if hasattr(app.state, "redis"):
         await app.state.redis.close()
     if hasattr(app.state, "redis_pool"):
-        app.state.redis_pool.disconnect()
+        await app.state.redis_pool.disconnect()
 
 celery_app = Celery(
     "llmops",

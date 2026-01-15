@@ -1,9 +1,10 @@
 from fastapi import FastAPI, APIRouter, Depends
-from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler, UploadFileHandler, DatasetHandler
+from internal.handle import AppHandler, BuiltinToolHandler, ApiToolHandler, UploadFileHandler, DatasetHandler, DocumentHandler
 from injector import inject
 from fastapi import Depends
 from internal.schema import (CompletionRequest, ValidateOpenApiSchemaRequest,
-                             CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest, CreateDatasetRequest, UpdateDatasetRequest, GetDatasetWithPageRequest)
+                             CreateApiToolRequest, GetApiToolProvidersWithPageRequest, UpdateApiToolProviderRequest,
+                             CreateDatasetRequest, UpdateDatasetRequest, GetDatasetWithPageRequest, CreateDocumentRequest)
 import uuid
 from internal.schema import UploadFileRequest, UploadImageRequest
 from internal.utils.dependencies import get_redis
@@ -15,9 +16,11 @@ logger = get_logger(__name__)
 @inject
 class DatasetRouter:
     dataset_handler: DatasetHandler
+    document_handler: DocumentHandler
 
-    def __init__(self, dataset_handler: DatasetHandler):
+    def __init__(self, dataset_handler: DatasetHandler, document_handler: DocumentHandler):
         self.dataset_handler = dataset_handler
+        self.document_handler = document_handler
 
     def get_router(self) -> APIRouter:
         """创建数据集路由实例"""
@@ -42,6 +45,10 @@ class DatasetRouter:
         @router.post("/{dataset_id}")
         async def update_dataset(dataset_id: uuid.UUID, request: UpdateDatasetRequest):
             return await self.dataset_handler.update_dataset(dataset_id, request)
+
+        @router.post("/{dataset_id}/documents")
+        async def create_documents(dataset_id: uuid.UUID, request: CreateDocumentRequest):
+            return await self.document_handler.create_documents(dataset_id, request)
 
         return router
 

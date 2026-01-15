@@ -3,6 +3,7 @@ from .builtin_tool_handle import BuiltinToolHandler
 from .api_tool_handle import ApiToolHandler
 from .upload_file_handle import UploadFileHandler
 from .dataset_handle import DatasetHandler
+from .document_handle import DocumentHandler
 
 __all__ = [
     "AppHandler",
@@ -10,4 +11,5 @@ __all__ = [
     "ApiToolHandler",
     "UploadFileHandler",
     "DatasetHandler",
+    "DocumentHandler",
 ]
