@@ -8,6 +8,7 @@ from internal.exception import ForbiddenException, FailException
 from config.logger import get_logger
 import time
 import random
+from internal.tasks.document_task import build_documents
 
 logger = get_logger(__name__)
 
@@ -57,6 +58,9 @@ class DocumentService:
                 position=position,
             )
             documents.append(document)
+        # 异步构建文档索引
+        build_documents.delay([document.id for document in documents])
+        
         return documents, batch
 
     async def get_latest_document_position(self, dataset_id: UUID) -> int:
