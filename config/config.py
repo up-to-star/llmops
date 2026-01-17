@@ -82,7 +82,7 @@ celery_app = Celery(
         "redis://localhost:16379/1"),
     backend=os.getenv(f"redis://{os.getenv('REDIS_HOST', 'localhost')}:{os.getenv('REDIS_PORT', 16379)}/{os.getenv('CELERY_RESULT_BACKEND_DB', 1)}",
                       "redis://localhost:16379/1"),
-    include=["internal.tasks.demo_task"]
+    include=["internal.tasks.demo_task", "internal.tasks.document_task"]
 )
 
 celery_app.conf.update(

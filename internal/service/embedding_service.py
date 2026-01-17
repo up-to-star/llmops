@@ -23,7 +23,8 @@ class EmbeddingsService:
             cache_folder=os.path.join(
                 os.getcwd(), "internal", "core", "embeddings"),
             model_kwargs={
-                "trust_remote_code": True
+                "trust_remote_code": True,
+                "device": "cpu"  # Force CPU usage to avoid CUDA memory issues
             }
         )
         # self._embeddings = OpenAIEmbeddings(model="text-embedding-ada-002")

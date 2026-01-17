@@ -60,7 +60,7 @@ class DocumentService:
             documents.append(document)
         # 异步构建文档索引
         build_documents.delay([document.id for document in documents])
-        
+
         return documents, batch
 
     async def get_latest_document_position(self, dataset_id: UUID) -> int:

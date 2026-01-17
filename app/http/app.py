@@ -3,7 +3,7 @@ from internal.router import Router
 from config.logger import setup_logging
 import os
 import dotenv
-from .module import injector
+from config.di_config import injector
 
 dotenv.load_dotenv()
 

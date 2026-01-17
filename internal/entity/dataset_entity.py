@@ -38,14 +38,14 @@ DEFAULT_PROCESS_RULE = {
                 "\n\n",
                 "\n",
                 "。|！|？",
-                "\.\s|\!\s|\?\s",
+                "\.\s|\!\s|\?\s",  # 英文标点符号后面通常需要加空格
                 "；|;\s",
                 "，|,\s",
                 " ",
                 ""
             ],
             "chunk_size": 500,
-            "chunk_overlap": 10,
+            "chunk_overlap": 50,
         }
-    },
+    }
 }
